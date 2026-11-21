@@ -64,7 +64,7 @@ def get_hero_stats(accountID, apiKey=None):
     return _get_data("/v1/players/hero-stats", {"account_ids": accountID}, apiKey)
 
 
-# Code for a quick terminal test
+# Code for a quick terminal test, might want to remove later.
 if __name__ == "__main__":
     import json
     import sys
