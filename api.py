@@ -36,7 +36,7 @@ def _get_data(path, params=None, apiKey=None):
         if resp.status_code == 429:
             if attempt == MAX_RETRIES:
                 raise RateLimitedException("Rate limited, try again in a moment.")
-            # Sleeps longer per attempt, avoids sending too many requests too quickly to a busy server.
+            # Sleeps longer per attempt, avoids sending too many requests too quickly to a busy server. This is generally good networking practice.
             time.sleep(2 * attempt)
             continue
         if resp.status_code == 404:
@@ -53,7 +53,7 @@ def _get_data(path, params=None, apiKey=None):
         return data
 
 
-# When a function has =None in a parameter, it means the parameter is optional when calling the function.
+# Note: When a function has =None in a parameter, it means the parameter is optional when calling the function.
 def get_profile(accountID, apiKey=None):
     return _get_data("/v1/players/steam", {"account_ids": accountID}, apiKey)
 

@@ -14,6 +14,7 @@ class WorkerSignals(QObject):
     failed = Signal(str)
 
 # This class is for background threading the API calls, so the window doesn't feeze when fetching API data.
+
 class ApiWorker(QRunnable):
     def __init__(self, fn, *args):
         super().__init__()
@@ -21,7 +22,6 @@ class ApiWorker(QRunnable):
         self.args = args
         self.signals = WorkerSignals()
 
-    # Will try to run the API worker, emitting sucess or failure signals to be caught by other functions.
     def run(self):
         try:
             result = self.fn(*self.args)
@@ -46,30 +46,26 @@ class MainWindow(QWidget):
         self.output.setReadOnly(True)
         self.pool = QThreadPool.globalInstance()
 
-        # Horizontal widget arrangement, left to right.
         row = QHBoxLayout()
         row.addWidget(self.input)
         row.addWidget(self.button)
 
-        # Vertical arrangement, top to bottom.
         VLayout = QVBoxLayout(self)
         VLayout.addLayout(row)
         VLayout.addWidget(self.status)
         VLayout.addWidget(self.output)
 
-        # Signals emitted by widgets.
         self.button.clicked.connect(self.search)
         self.input.returnPressed.connect(self.search)
 
     def search(self):
         text = self.input.text().strip()
 
-        # Ensures that the user enters a number. If it isn't of proper length as it will print bad account ID anyways.
         if not text.isdigit():
             self.status.setText("Enter a numeric account ID.")
             return
 
-        # Waits for the widgets to handle pending events to show loading. To be replaced later when threading is implemented.
+        # Waits for the widgets to handle pending events to show loading while the thread works.
         self.button.setEnabled(False)
         self.status.setText("Loading...")
         worker = ApiWorker(api.get_hero_stats, int(text))
@@ -77,19 +73,19 @@ class MainWindow(QWidget):
         worker.signals.failed.connect(self.on_error)
         self.pool.start(worker)
 
-    # Upon the thread successfully completing the task.
+    # Thread success
     def on_result(self, data):
         self.output.setPlainText(json.dumps(data, indent = 2))
         self.status.setText("Done.")
         self.button.setEnabled(True)
 
-    # When the thread doesn't work as intended.
+    # Thread failure
     def on_error(self, message):
         self.output.clear()
         self.status.setText(message)
         self.button.setEnabled(True)
 
-# Actually starts the GUI.
+# Actually starts the GUI window to run for the user.
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     win = MainWindow()
