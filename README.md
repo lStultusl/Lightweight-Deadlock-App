@@ -23,7 +23,7 @@ Moves API calls onto a worker thread to allow more flexibility with the frontend
 Core viewing with basic profile summary: top heroes, recent matches list. Readable frontend - [ ]\
 Implement caching and front-end error messages for repeat or failed lookups - [ ]\
 Package the program, fix up REAME - [ ]\
-Official release on Github - [ ]\
+Official release on Github - [ ]
 
 
 # Video demo
@@ -38,4 +38,4 @@ Steam vanity name and profile URL input\
 Charts and graphs\
 Saved or favorite players\
 Auto-updater and installer (?)\
-Discord bot sharing the same API script\
+Discord bot sharing the same API script
